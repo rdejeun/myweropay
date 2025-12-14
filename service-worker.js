@@ -1,10 +1,10 @@
-const CACHE_NAME = 'wero-qr-v1';
+const CACHE_NAME = 'wero-qr-v0';
 const urlsToCache = [
-  './',
-  './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
+//  '/',
+//  '/index.html',
+//  '/manifest.json',
+//  '/icon-192.png',
+//  '/icon-512.png'
 ];
 
 // Installation du Service Worker
