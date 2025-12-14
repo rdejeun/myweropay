@@ -94,7 +94,7 @@
         const ReactDOM = window.ReactDOM;
 
         // Version automatique basée sur la date/heure (format: YYMMDD.HHmm)
-        const APP_VERSION = '251214.2305';
+        const APP_VERSION = '251214.2345';
 
         // Polyfill pour window.storage si pas disponible
         if (!window.storage) {
@@ -389,7 +389,7 @@
                             React.createElement('button', {
                                 onClick: saveSettings,
                                 disabled: isSaving,
-                                className: `w-full py-4 rounded-lg font-semibold text-lg shadow-lg ${isSaving ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-900 to-emerald-500 text-white'}`
+                                className: `w-full py-4 rounded-lg font-semibold text-lg shadow-lg ${isSaving ? 'bg-slate-400 cursor-not-allowed' : 'bg-yellow-400 text-slate-900'}`
                             }, isSaving ?
                                 React.createElement('span', { className: 'flex items-center justify-center gap-2' },
                                     React.createElement('div', { className: 'rounded-full h-5 w-5 border-b-2 border-white' }),
@@ -451,7 +451,7 @@
                         React.createElement('button', {
                             onClick: generateQRCode,
                             disabled: !amount || amount === '0,00' || amount === '0,0',
-                            className: `w-full py-4 rounded-lg font-semibold text-lg shadow-lg ${!amount || amount === '0,00' || amount === '0,0' ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-gradient-to-r from-blue-900 to-emerald-500 text-white'}`
+                            className: `w-full py-4 rounded-lg font-semibold text-lg shadow-lg ${!amount || amount === '0,00' || amount === '0,0' ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-yellow-400 text-slate-900'}`
                         }, 'Générer le QR Code'),
                         React.createElement('div', { className: 'text-center mt-4 text-xs text-slate-500' }, `v${APP_VERSION}`)
                     )
@@ -462,9 +462,9 @@
                 return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-6' },
                     React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full' },
                         React.createElement('div', { className: 'text-center mb-6' },
-                            React.createElement('h2', { className: 'text-2xl font-semibold text-slate-900 mb-3' }, getDisplayName()),
+                            React.createElement('h2', { className: 'text-2xl font-semibold text-slate-700 mb-3' }, getDisplayName()),
                             React.createElement('div', {
-                                className: 'text-5xl font-bold text-emerald-500 mb-1',
+                                className: 'text-5xl font-bold text-yellow-500 text-shadow-md mb-1',
                                 style: { fontFamily: 'Inter, sans-serif', fontFeatureSettings: "'tnum'" }
                             }, formatAmountWithThousands(displayAmount) + ' €'),
                             React.createElement('p', { className: 'text-slate-600 text-sm' }, 'Montant à payer')
@@ -484,10 +484,10 @@
                         React.createElement('p', { className: 'text-center text-sm text-slate-600 mb-6' }, 'Scannez ce QR code avec l\'application WERO pour payer'),
                         React.createElement('button', {
                             onClick: newPayment,
-                            className: 'w-full bg-gradient-to-r from-blue-900 to-emerald-500 text-white py-4 rounded-lg font-semibold text-lg shadow-lg flex items-center justify-center gap-2'
+                            className: 'w-full bg-yellow-400 text-slate-900 py-4 rounded-lg font-semibold text-lg shadow-lg flex items-center justify-center gap-2'
                         },
                             React.createElement('i', { 'data-lucide': 'x', className: 'w-5 h-5' }),
-                            'Nouveau paiement'
+                            'Fermer l\'application'
                         ),
                         React.createElement('div', { className: 'text-center mt-4 text-xs text-slate-500' }, `v${APP_VERSION}`)
                     )
