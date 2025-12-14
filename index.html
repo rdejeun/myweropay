@@ -8,7 +8,7 @@
     <title>WERO QR Generator</title>
     
     <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest.json">
     
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="icon-192.png">
@@ -363,7 +363,7 @@
 
         // Enregistrer le Service Worker
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
+            navigator.serviceWorker.register('./service-worker.js', { scope: '/myweropay/' })
                 .then(registration => console.log('Service Worker enregistré'))
                 .catch(error => console.log('Erreur Service Worker:', error));
         }
