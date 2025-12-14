@@ -332,9 +332,9 @@
                             React.createElement('div', { className: 'text-5xl font-bold text-green-600 mb-1' }, formatAmountWithThousands(displayAmount) + ' €'),
                             React.createElement('p', { className: 'text-gray-600' }, 'Montant à payer')
                         ),
-                        React.createElement('div', { className: 'bg-white p-6 rounded-xl border-4 border-gray-200 mb-6 flex justify-center' },
-                            qrCodeUrl ? 
-                                React.createElement('img', { src: qrCodeUrl, alt: 'QR Code WERO', className: 'w-64 h-64' }) :
+                        React.createElement('div', { className: 'mb-6 flex justify-center' },
+                            qrCodeUrl ?
+                                React.createElement('img', { src: qrCodeUrl, alt: 'QR Code WERO', className: 'w-64 h-64', style: { aspectRatio: '1/1', imageRendering: 'pixelated' } }) :
                                 React.createElement('div', { className: 'w-64 h-64 flex items-center justify-center' },
                                     React.createElement('div', { className: 'animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600' })
                                 )
