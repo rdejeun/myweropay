@@ -82,6 +82,43 @@
             white-space: nowrap;
             border-width: 0;
         }
+
+        /* Smooth transitions for interactive elements */
+        * {
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
+        }
+
+        /* Scale-in animation for cards */
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0.95);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .animate-scale-in {
+            animation: scaleIn 200ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Fade-in animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 300ms ease-out;
+        }
     </style>
 </head>
 <body>
@@ -93,7 +130,7 @@
         const ReactDOM = window.ReactDOM;
 
         // Version automatique basée sur la date/heure (format: YYMMDD.HHmm)
-        const APP_VERSION = '251214.2245';
+        const APP_VERSION = '251214.2250';
 
         // Polyfill pour window.storage si pas disponible
         if (!window.storage) {
@@ -316,7 +353,7 @@
 
             if (screen === 'setup') {
                 return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-12' },
-                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full' },
+                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full animate-scale-in' },
                         // Header avec logo WERO
                         React.createElement('div', { className: 'text-center mb-8' },
                             React.createElement('img', {
@@ -403,7 +440,7 @@
 
             if (screen === 'input') {
                 return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-12' },
-                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full' },
+                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full animate-scale-in' },
                         React.createElement('div', { className: 'flex justify-between items-center mb-8' },
                             React.createElement('h1', { className: 'text-3xl font-semibold text-slate-900 flex items-center gap-2' },
                                 'Paiement ',
@@ -459,7 +496,7 @@
 
             if (screen === 'display') {
                 return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-12' },
-                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full' },
+                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full animate-scale-in' },
                         React.createElement('div', { className: 'text-center mb-6' },
                             React.createElement('div', { className: 'flex items-center justify-center gap-2 mb-3' },
                                 React.createElement('img', {
