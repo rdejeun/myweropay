@@ -28,6 +28,26 @@
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
         }
+
+        /* Animation pulse unique au chargement */
+        @keyframes pulseOnce {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.6;
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .amount-input {
+            animation: pulseOnce 1s ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -36,7 +56,10 @@
     <script type="module">
         import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18';
         import ReactDOM from 'https://esm.sh/react-dom@18/client';
-        
+
+        // Version automatique basée sur la date/heure (format: YYMMDD.HHmm)
+        const APP_VERSION = '241214.1730';
+
         // Polyfill pour window.storage si pas disponible
         if (!window.storage) {
             window.storage = {
@@ -279,12 +302,13 @@
                                 onClick: saveSettings,
                                 disabled: isSaving,
                                 className: `w-full py-4 rounded-lg font-semibold text-lg transition-all shadow-lg ${isSaving ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-green-600 text-white hover:from-blue-700 hover:to-green-700'}`
-                            }, isSaving ? 
+                            }, isSaving ?
                                 React.createElement('span', { className: 'flex items-center justify-center gap-2' },
                                     React.createElement('div', { className: 'animate-spin rounded-full h-5 w-5 border-b-2 border-white' }),
                                     'Enregistrement...'
                                 ) : 'Enregistrer'
-                            )
+                            ),
+                            React.createElement('div', { className: 'text-center mt-4 text-xs text-gray-400' }, `v${APP_VERSION}`)
                         )
                     )
                 );
@@ -319,15 +343,16 @@
                                     onChange: handleAmountChange,
                                     onKeyPress: handleAmountKeyPress,
                                     placeholder: '0,00',
-                                    className: 'w-full px-6 py-4 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-3xl font-bold text-right pr-16'
+                                    className: 'amount-input w-full px-6 py-5 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-5xl font-bold text-right pr-20'
                                 }),
-                                React.createElement('span', { className: 'absolute right-6 top-1/2 transform -translate-y-1/2 text-3xl font-bold text-gray-400' }, '€')
+                                React.createElement('span', { className: 'absolute right-6 top-1/2 transform -translate-y-1/2 text-5xl font-bold text-gray-400' }, '€')
                             )
                         ),
                         React.createElement('button', {
                             onClick: generateQRCode,
                             className: 'w-full bg-gradient-to-r from-blue-600 to-green-600 text-white py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-green-700 transition-all shadow-lg'
-                        }, 'Générer QR Code')
+                        }, 'Générer QR Code'),
+                        React.createElement('div', { className: 'text-center mt-4 text-xs text-gray-400' }, `v${APP_VERSION}`)
                     )
                 );
             }
@@ -354,7 +379,8 @@
                         },
                             React.createElement('i', { 'data-lucide': 'arrow-left', className: 'w-5 h-5' }),
                             'Fermer'
-                        )
+                        ),
+                        React.createElement('div', { className: 'text-center mt-4 text-xs text-gray-400' }, `v${APP_VERSION}`)
                     )
                 );
             }
