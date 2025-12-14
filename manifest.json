@@ -1,6 +1,6 @@
 {
-  "name": "WERO myQR",
-  "short_name": "WERO myQR",
+  "name": "CMB WERO QR",
+  "short_name": "CMB WERO QR",
   "description": "Personal QR Code generator for WERO payment",
   "start_url": "/myweropay/",
   "scope": "/myweropay/",
