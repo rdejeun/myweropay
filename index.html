@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Générateur de QR Code pour paiements WERO">
+    <meta name="theme-color" content="#2563eb">
+    <title>WERO QR Generator</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="module">
+        import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18';
+        import ReactDOM from 'https://esm.sh/react-dom@18/client';
+        
+        // Polyfill pour window.storage si pas disponible
+        if (!window.storage) {
+            window.storage = {
+                async get(key) {
+                    const value = localStorage.getItem(key);
+                    return value ? { key, value } : null;
+                },
+                async set(key, value) {
+                    localStorage.setItem(key, value);
+                    return { key, value };
+                },
+                async delete(key) {
+                    localStorage.removeItem(key);
+                    return { key, deleted: true };
+                }
+            };
+        }
+
+        const WeroQRGenerator = () => {
+            const [screen, setScreen] = useState('loading');
+            const [userName, setUserName] = useState('');
+            const [urlPrefix, setUrlPrefix] = useState('');
+            const [showFullName, setShowFullName] = useState(false);
+            const [isSaving, setIsSaving] = useState(false);
+            const [amount, setAmount] = useState('');
+            const [displayAmount, setDisplayAmount] = useState('');
+            const [qrCodeUrl, setQrCodeUrl] = useState('');
+            const amountInputRef = useRef(null);
+
+            useEffect(() => {
+                loadSettings();
+            }, []);
+
+            useEffect(() => {
+                if (screen === 'input' && amountInputRef.current) {
+                    amountInputRef.current.focus();
+                }
+            }, [screen]);
+
+            const loadSettings = async () => {
+                try {
+                    const nameResult = await window.storage.get('wero_user_name');
+                    const prefixResult = await window.storage.get('wero_url_prefix');
+                    const fullNameResult = await window.storage.get('wero_show_full_name');
+                    
+                    if (nameResult && prefixResult) {
+                        setUserName(nameResult.value);
+                        setUrlPrefix(prefixResult.value);
+                        setShowFullName(fullNameResult?.value === 'true');
+                        setScreen('input');
+                    } else {
+                        setScreen('setup');
+                    }
+                } catch (error) {
+                    setScreen('setup');
+                }
+            };
+
+            const saveSettings = async () => {
+                if (!userName.trim() || !urlPrefix.trim()) {
+                    alert('Veuillez remplir tous les champs');
+                    return;
+                }
+
+                setIsSaving(true);
+                
+                try {
+                    await window.storage.set('wero_user_name', userName);
+                    await window.storage.set('wero_url_prefix', urlPrefix);
+                    await window.storage.set('wero_show_full_name', showFullName.toString());
+                    
+                    setTimeout(() => {
+                        setIsSaving(false);
+                        setScreen('input');
+                    }, 500);
+                } catch (error) {
+                    setIsSaving(false);
+                    alert('Erreur lors de la sauvegarde des paramètres');
+                }
+            };
+
+            const formatAmountDisplay = (value) => {
+                let cleaned = value.replace(/[^\d.,]/g, '').replace(',', '.');
+                
+                const parts = cleaned.split('.');
+                if (parts.length > 2) {
+                    cleaned = parts[0] + '.' + parts.slice(1).join('');
+                }
+                if (parts[1] && parts[1].length > 2) {
+                    cleaned = parts[0] + '.' + parts[1].substring(0, 2);
+                }
+                
+                return cleaned.replace('.', ',');
+            };
+
+            const getDisplayName = () => {
+                if (showFullName) {
+                    return userName;
+                }
+                
+                const parts = userName.trim().split(/\s+/);
+                if (parts.length < 2) {
+                    return userName;
+                }
+                
+                const firstName = parts[0];
+                const lastNameInitial = parts[1].charAt(0).toUpperCase();
+                
+                return `${firstName} ${lastNameInitial}******`;
+            };
+
+            const formatAmountWithThousands = (value) => {
+                const parts = value.split(',');
+                const integerPart = parts[0];
+                const decimalPart = parts[1] || '';
+                
+                const formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '\u00A0');
+                
+                return decimalPart ? `${formattedInteger},${decimalPart}` : formattedInteger;
+            };
+
+            const handleAmountChange = (e) => {
+                const formatted = formatAmountDisplay(e.target.value);
+                setAmount(formatted);
+            };
+
+            const handleAmountKeyPress = (e) => {
+                if (e.key === 'Enter') {
+                    generateQRCode();
+                }
+            };
+
+            const generateQRCode = () => {
+                const amountValue = parseFloat(amount.replace(',', '.'));
+                
+                if (!amountValue || amountValue <= 0) {
+                    alert('Veuillez saisir un montant valide');
+                    return;
+                }
+
+                const centimes = Math.round(amountValue * 100);
+                const finalUrl = `${urlPrefix}?a=${centimes}&c=EUR`;
+                
+                setDisplayAmount(amountValue.toFixed(2).replace('.', ','));
+                generateQR(finalUrl);
+                setScreen('display');
+            };
+
+            const generateQR = (url) => {
+                const canvas = document.createElement('canvas');
+                const size = 300;
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                
+                if (window.qrcode) {
+                    const typeNumber = 0;
+                    const errorCorrectionLevel = 'M';
+                    const qr = window.qrcode(typeNumber, errorCorrectionLevel);
+                    qr.addData(url);
+                    qr.make();
+                    
+                    const moduleCount = qr.getModuleCount();
+                    const cellSize = size / moduleCount;
+                    
+                    ctx.fillStyle = '#ffffff';
+                    ctx.fillRect(0, 0, size, size);
+                    
+                    ctx.fillStyle = '#000000';
+                    for (let row = 0; row < moduleCount; row++) {
+                        for (let col = 0; col < moduleCount; col++) {
+                            if (qr.isDark(row, col)) {
+                                ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                            }
+                        }
+                    }
+                    
+                    setQrCodeUrl(canvas.toDataURL());
+                }
+            };
+
+            const newPayment = () => {
+                window.close();
+                
+                setTimeout(() => {
+                    setAmount('');
+                    setDisplayAmount('');
+                    setQrCodeUrl('');
+                    setScreen('input');
+                }, 100);
+            };
+
+            const goToSettings = () => {
+                setScreen('setup');
+            };
+
+            if (screen === 'setup') {
+                return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-6 flex items-center justify-center' },
+                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full' },
+                        React.createElement('h1', { className: 'text-3xl font-bold text-gray-800 mb-2' }, 'Configuration WERO'),
+                        React.createElement('p', { className: 'text-gray-600 mb-8' }, 'Configurez votre application de paiement'),
+                        React.createElement('div', { className: 'space-y-6' },
+                            React.createElement('div', null,
+                                React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-2' }, 'Votre nom'),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    value: userName,
+                                    onChange: (e) => setUserName(e.target.value),
+                                    placeholder: 'Ex: Pierre Dupont',
+                                    className: 'w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-lg'
+                                }),
+                                React.createElement('div', { className: 'flex items-center mt-3' },
+                                    React.createElement('input', {
+                                        type: 'checkbox',
+                                        id: 'showFullName',
+                                        checked: showFullName,
+                                        onChange: (e) => setShowFullName(e.target.checked),
+                                        className: 'w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500'
+                                    }),
+                                    React.createElement('label', { htmlFor: 'showFullName', className: 'ml-3 text-sm font-medium text-gray-700' }, 'Afficher le nom complet')
+                                )
+                            ),
+                            React.createElement('div', null,
+                                React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-2' }, 'Préfixe URL WERO'),
+                                React.createElement('input', {
+                                    type: 'text',
+                                    value: urlPrefix,
+                                    onChange: (e) => setUrlPrefix(e.target.value),
+                                    placeholder: 'https://share.weropay.eu/xxxxxxxx',
+                                    className: 'w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-lg'
+                                }),
+                                React.createElement('p', { className: 'text-xs text-gray-500 mt-1' }, 'L\'URL de base fournie par votre banque')
+                            ),
+                            React.createElement('button', {
+                                onClick: saveSettings,
+                                disabled: isSaving,
+                                className: `w-full py-4 rounded-lg font-semibold text-lg transition-all shadow-lg ${isSaving ? 'bg-gray-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-600 to-green-600 text-white hover:from-blue-700 hover:to-green-700'}`
+                            }, isSaving ? 
+                                React.createElement('span', { className: 'flex items-center justify-center gap-2' },
+                                    React.createElement('div', { className: 'animate-spin rounded-full h-5 w-5 border-b-2 border-white' }),
+                                    'Enregistrement...'
+                                ) : 'Enregistrer'
+                            )
+                        )
+                    )
+                );
+            }
+
+            if (screen === 'input') {
+                return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-6 flex items-center justify-center' },
+                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full' },
+                        React.createElement('div', { className: 'flex justify-between items-center mb-8' },
+                            React.createElement('h1', { className: 'text-3xl font-bold text-gray-800' }, 'Paiement WERO'),
+                            React.createElement('button', {
+                                onClick: goToSettings,
+                                className: 'text-gray-400 hover:text-gray-600 transition-colors'
+                            }, React.createElement('i', { 'data-lucide': 'settings', className: 'w-6 h-6' }))
+                        ),
+                        React.createElement('div', { className: 'mb-8' },
+                            React.createElement('label', { className: 'block text-sm font-medium text-gray-700 mb-3' }, 'Montant demandé'),
+                            React.createElement('div', { className: 'relative' },
+                                React.createElement('input', {
+                                    ref: amountInputRef,
+                                    type: 'text',
+                                    inputMode: 'decimal',
+                                    value: amount,
+                                    onChange: handleAmountChange,
+                                    onKeyPress: handleAmountKeyPress,
+                                    placeholder: '0,00',
+                                    className: 'w-full px-6 py-4 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-3xl font-bold text-right pr-16'
+                                }),
+                                React.createElement('span', { className: 'absolute right-6 top-1/2 transform -translate-y-1/2 text-3xl font-bold text-gray-400' }, '€')
+                            )
+                        ),
+                        React.createElement('button', {
+                            onClick: generateQRCode,
+                            className: 'w-full bg-gradient-to-r from-blue-600 to-green-600 text-white py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-green-700 transition-all shadow-lg'
+                        }, 'Générer QR Code')
+                    )
+                );
+            }
+
+            if (screen === 'display') {
+                return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-blue-50 to-green-50 p-6 flex items-center justify-center' },
+                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full' },
+                        React.createElement('div', { className: 'text-center mb-6' },
+                            React.createElement('h2', { className: 'text-2xl font-bold text-gray-800 mb-2' }, getDisplayName()),
+                            React.createElement('div', { className: 'text-5xl font-bold text-green-600 mb-1' }, formatAmountWithThousands(displayAmount) + ' €'),
+                            React.createElement('p', { className: 'text-gray-600' }, 'Montant à payer')
+                        ),
+                        React.createElement('div', { className: 'bg-white p-6 rounded-xl border-4 border-gray-200 mb-6 flex justify-center' },
+                            qrCodeUrl ? 
+                                React.createElement('img', { src: qrCodeUrl, alt: 'QR Code WERO', className: 'w-64 h-64' }) :
+                                React.createElement('div', { className: 'w-64 h-64 flex items-center justify-center' },
+                                    React.createElement('div', { className: 'animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600' })
+                                )
+                        ),
+                        React.createElement('p', { className: 'text-center text-sm text-gray-600 mb-6' }, 'Scannez ce QR code avec l\'application WERO pour payer'),
+                        React.createElement('button', {
+                            onClick: newPayment,
+                            className: 'w-full bg-gradient-to-r from-blue-600 to-green-600 text-white py-4 rounded-lg font-semibold text-lg hover:from-blue-700 hover:to-green-700 transition-all shadow-lg flex items-center justify-center gap-2'
+                        },
+                            React.createElement('i', { 'data-lucide': 'arrow-left', className: 'w-5 h-5' }),
+                            'Fermer'
+                        )
+                    )
+                );
+            }
+
+            return React.createElement('div', { className: 'min-h-screen bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center' },
+                React.createElement('div', { className: 'animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600' })
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(WeroQRGenerator));
+        
+        // Initialiser Lucide icons
+        setTimeout(() => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }, 100);
+
+        // Enregistrer le Service Worker
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(registration => console.log('Service Worker enregistré'))
+                .catch(error => console.log('Erreur Service Worker:', error));
+        }
+    </script>
+</body>
+</html>
