@@ -13,14 +13,14 @@
     <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="icon-192.png">
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- QR Code Library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-    
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Tailwind CSS (local copy for offline support) -->
+    <script src="./deps/tailwind.js"></script>
+
+    <!-- QR Code Library (local copy) -->
+    <script src="./deps/qrcode.min.js"></script>
+
+    <!-- Lucide Icons (local copy) -->
+    <script src="./deps/lucide.min.js"></script>
     
     <style>
         body {
@@ -35,6 +35,8 @@
     <div id="root"></div>
     
     <script type="module">
+        // Note: React reste sur CDN esm.sh car les modules ESM nécessitent
+        // un serveur avec support des import maps pour fonctionner localement
         import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18';
         import ReactDOM from 'https://esm.sh/react-dom@18/client';
 
