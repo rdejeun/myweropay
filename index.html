@@ -21,7 +21,11 @@
 
     <!-- Lucide Icons (local copy) -->
     <script src="./deps/lucide.min.js"></script>
-    
+
+    <!-- React (local copy for full offline support) -->
+    <script src="./deps/react.development.js"></script>
+    <script src="./deps/react-dom.development.js"></script>
+
     <style>
         body {
             margin: 0;
@@ -34,14 +38,13 @@
 <body>
     <div id="root"></div>
     
-    <script type="module">
-        // Note: React reste sur CDN esm.sh car les modules ESM nécessitent
-        // un serveur avec support des import maps pour fonctionner localement
-        import React, { useState, useEffect, useRef } from 'https://esm.sh/react@18';
-        import ReactDOM from 'https://esm.sh/react-dom@18/client';
+    <script>
+        // Utilise React en tant que variable globale (chargée via UMD)
+        const { useState, useEffect, useRef } = React;
+        const ReactDOM = window.ReactDOM;
 
         // Version automatique basée sur la date/heure (format: YYMMDD.HHmm)
-        const APP_VERSION = '241214.1730';
+        const APP_VERSION = '251214.1852';
 
         // Polyfill pour window.storage si pas disponible
         if (!window.storage) {
