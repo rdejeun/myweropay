@@ -130,7 +130,7 @@
         const ReactDOM = window.ReactDOM;
 
         // Version automatique basée sur la date/heure (format: YYMMDD.HHmm)
-        const APP_VERSION = '251214.2255';
+        const APP_VERSION = '251214.2300';
 
         // Polyfill pour window.storage si pas disponible
         if (!window.storage) {
@@ -352,7 +352,7 @@
             };
 
             if (screen === 'setup') {
-                return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-12' },
+                return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-6' },
                     React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full animate-scale-in' },
                         // Header avec logo WERO
                         React.createElement('div', { className: 'text-center mb-8' },
@@ -439,10 +439,10 @@
             }
 
             if (screen === 'input') {
-                return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-12' },
+                return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-6' },
                     React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full animate-scale-in' },
                         React.createElement('div', { className: 'flex justify-between items-center mb-8' },
-                            React.createElement('h1', { className: 'text-3xl font-semibold text-slate-900 flex items-center gap-2' },
+                            React.createElement('h1', { className: 'text-2xl sm:text-3xl font-semibold text-slate-900 flex items-center gap-2' },
                                 'Paiement ',
                                 React.createElement('img', {
                                     src: './wero_logo.png',
@@ -495,7 +495,7 @@
             }
 
             if (screen === 'display') {
-                return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-12' },
+                return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-6' },
                     React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full animate-scale-in' },
                         React.createElement('div', { className: 'text-center mb-6' },
                             React.createElement('h2', { className: 'text-2xl font-semibold text-slate-900 mb-3' }, getDisplayName()),
@@ -518,33 +518,12 @@
                                 )
                         ),
                         React.createElement('p', { className: 'text-center text-sm text-slate-600 mb-6' }, 'Scannez ce QR code avec l\'application WERO pour payer'),
-                        React.createElement('div', { className: 'space-y-3' },
-                            navigator.share && React.createElement('button', {
-                                onClick: async () => {
-                                    try {
-                                        const blob = await fetch(qrCodeUrl).then(r => r.blob());
-                                        const file = new File([blob], `wero-qr-${displayAmount.replace(',', '-')}.png`, { type: 'image/png' });
-                                        await navigator.share({
-                                            title: `Paiement WERO - ${formatAmountWithThousands(displayAmount)} €`,
-                                            text: `Scannez ce QR code pour payer ${formatAmountWithThousands(displayAmount)} €`,
-                                            files: [file]
-                                        });
-                                    } catch (err) {
-                                        console.log('Partage annulé ou non supporté');
-                                    }
-                                },
-                                className: 'w-full bg-yellow-400 text-slate-900 py-4 rounded-lg font-semibold text-lg hover:bg-yellow-500 transition-all shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]'
-                            },
-                                React.createElement('i', { 'data-lucide': 'share-2', className: 'w-5 h-5' }),
-                                'Partager'
-                            ),
-                            React.createElement('button', {
-                                onClick: newPayment,
-                                className: 'w-full border-2 border-slate-300 text-slate-700 py-4 rounded-lg font-semibold text-lg hover:bg-slate-50 transition-all flex items-center justify-center gap-2 active:scale-[0.98]'
-                            },
-                                React.createElement('i', { 'data-lucide': 'x', className: 'w-5 h-5' }),
-                                'Nouveau paiement'
-                            )
+                        React.createElement('button', {
+                            onClick: newPayment,
+                            className: 'w-full bg-gradient-to-r from-blue-900 to-emerald-500 text-white py-4 rounded-lg font-semibold text-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2'
+                        },
+                            React.createElement('i', { 'data-lucide': 'x', className: 'w-5 h-5' }),
+                            'Nouveau paiement'
                         ),
                         React.createElement('div', { className: 'text-center mt-4 text-xs text-slate-500' }, `v${APP_VERSION}`)
                     )
