@@ -4,7 +4,7 @@
   "description": "Générateur de QR Code pour paiements WERO",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#2563eb",
+  "theme_color": "#ffee00",
   "orientation": "portrait",
   "icons": [
     {
