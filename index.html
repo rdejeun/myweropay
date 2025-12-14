@@ -44,7 +44,7 @@
         const ReactDOM = window.ReactDOM;
 
         // Version automatique basée sur la date/heure (format: YYMMDD.HHmm)
-        const APP_VERSION = '251214.1852';
+        const APP_VERSION = '251214.1913';
 
         // Polyfill pour window.storage si pas disponible
         if (!window.storage) {
@@ -329,9 +329,9 @@
                                     onChange: handleAmountChange,
                                     onKeyPress: handleAmountKeyPress,
                                     placeholder: '0,00',
-                                    className: 'w-full px-6 py-6 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-6xl font-thin text-right pr-24'
+                                    className: 'w-full px-6 py-6 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-4xl md:text-5xl lg:text-6xl font-thin text-right pr-16 md:pr-20 lg:pr-24'
                                 }),
-                                React.createElement('span', { className: 'absolute right-6 top-1/2 transform -translate-y-1/2 text-6xl font-thin text-gray-400' }, '€')
+                                React.createElement('span', { className: 'absolute right-6 top-1/2 transform -translate-y-1/2 text-4xl md:text-5xl lg:text-6xl font-thin text-gray-400' }, '€')
                             )
                         ),
                         React.createElement('button', {
