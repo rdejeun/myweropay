@@ -83,42 +83,6 @@
             border-width: 0;
         }
 
-        /* Smooth transitions for interactive elements */
-        * {
-            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 150ms;
-        }
-
-        /* Scale-in animation for cards */
-        @keyframes scaleIn {
-            0% {
-                transform: scale(0.95);
-                opacity: 0;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .animate-scale-in {
-            animation: scaleIn 200ms cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Fade-in animation */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 300ms ease-out;
-        }
     </style>
 </head>
 <body>
@@ -130,7 +94,7 @@
         const ReactDOM = window.ReactDOM;
 
         // Version automatique basée sur la date/heure (format: YYMMDD.HHmm)
-        const APP_VERSION = '251214.2300';
+        const APP_VERSION = '251214.2305';
 
         // Polyfill pour window.storage si pas disponible
         if (!window.storage) {
@@ -353,7 +317,7 @@
 
             if (screen === 'setup') {
                 return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-6' },
-                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full animate-scale-in' },
+                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full' },
                         // Header avec logo WERO
                         React.createElement('div', { className: 'text-center mb-8' },
                             React.createElement('img', {
@@ -379,7 +343,7 @@
                                         value: userName,
                                         onChange: (e) => setUserName(e.target.value),
                                         placeholder: 'Ex: Pierre Dupont',
-                                        className: 'w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-lg focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 focus:outline-none text-lg transition-all'
+                                        className: 'w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-lg focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 focus:outline-none text-lg'
                                     })
                                 ),
                                 // Toggle Switch
@@ -394,10 +358,10 @@
                                         role: 'switch',
                                         'aria-checked': showFullName,
                                         onClick: () => setShowFullName(!showFullName),
-                                        className: `relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 ${showFullName ? 'bg-yellow-400' : 'bg-slate-300'}`
+                                        className: `relative inline-flex h-6 w-11 items-center rounded-full focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-offset-2 ${showFullName ? 'bg-yellow-400' : 'bg-slate-300'}`
                                     },
                                         React.createElement('span', {
-                                            className: `inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${showFullName ? 'translate-x-6' : 'translate-x-1'}`
+                                            className: `inline-block h-4 w-4 transform rounded-full bg-white ${showFullName ? 'translate-x-6' : 'translate-x-1'}`
                                         })
                                     )
                                 )
@@ -416,7 +380,7 @@
                                         value: urlPrefix,
                                         onChange: (e) => setUrlPrefix(e.target.value),
                                         placeholder: 'https://share.weropay.eu/xxxxxxxx',
-                                        className: 'w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-lg focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 focus:outline-none text-lg transition-all'
+                                        className: 'w-full pl-10 pr-4 py-3 border-2 border-slate-200 rounded-lg focus:border-yellow-400 focus:ring-2 focus:ring-yellow-400/20 focus:outline-none text-lg'
                                     })
                                 ),
                                 React.createElement('p', { className: 'text-xs text-slate-500 mt-1' }, 'L\'URL de base fournie par votre banque')
@@ -425,10 +389,10 @@
                             React.createElement('button', {
                                 onClick: saveSettings,
                                 disabled: isSaving,
-                                className: `w-full py-4 rounded-lg font-semibold text-lg transition-all shadow-lg ${isSaving ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-900 to-emerald-500 text-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'}`
+                                className: `w-full py-4 rounded-lg font-semibold text-lg shadow-lg ${isSaving ? 'bg-slate-400 cursor-not-allowed' : 'bg-gradient-to-r from-blue-900 to-emerald-500 text-white'}`
                             }, isSaving ?
                                 React.createElement('span', { className: 'flex items-center justify-center gap-2' },
-                                    React.createElement('div', { className: 'animate-spin rounded-full h-5 w-5 border-b-2 border-white' }),
+                                    React.createElement('div', { className: 'rounded-full h-5 w-5 border-b-2 border-white' }),
                                     'Enregistrement...'
                                 ) : 'Enregistrer'
                             ),
@@ -440,7 +404,7 @@
 
             if (screen === 'input') {
                 return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-6' },
-                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full animate-scale-in' },
+                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full' },
                         React.createElement('div', { className: 'flex justify-between items-center mb-8' },
                             React.createElement('h1', { className: 'text-2xl sm:text-3xl font-semibold text-slate-900 flex items-center gap-2' },
                                 'Paiement ',
@@ -453,7 +417,7 @@
                             ),
                             React.createElement('button', {
                                 onClick: goToSettings,
-                                className: 'text-slate-500 hover:text-slate-600 transition-colors p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400',
+                                className: 'text-slate-500 hover:text-slate-600 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400',
                                 'aria-label': 'Paramètres'
                             }, React.createElement('i', { 'data-lucide': 'settings', className: 'w-6 h-6' }))
                         ),
@@ -469,7 +433,7 @@
                                     onBlur: (e) => validateAmount(e.target.value),
                                     onKeyPress: handleAmountKeyPress,
                                     placeholder: '0,00',
-                                    className: `w-full px-6 py-6 border-2 rounded-lg focus:outline-none text-4xl md:text-5xl lg:text-6xl font-light text-right pr-16 md:pr-20 lg:pr-24 transition-all ${amountError ? 'border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-500/20' : 'border-slate-200 focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/20'}`,
+                                    className: `w-full px-6 py-6 border-2 rounded-lg focus:outline-none text-4xl md:text-5xl lg:text-6xl font-light text-right pr-16 md:pr-20 lg:pr-24 ${amountError ? 'border-red-400 focus:border-red-500 focus:ring-4 focus:ring-red-500/20' : 'border-slate-200 focus:border-yellow-400 focus:ring-4 focus:ring-yellow-400/20'}`,
                                     style: { fontFamily: 'Inter, sans-serif', fontFeatureSettings: "'tnum'" }
                                 }),
                                 React.createElement('span', {
@@ -487,7 +451,7 @@
                         React.createElement('button', {
                             onClick: generateQRCode,
                             disabled: !amount || amount === '0,00' || amount === '0,0',
-                            className: `w-full py-4 rounded-lg font-semibold text-lg transition-all shadow-lg ${!amount || amount === '0,00' || amount === '0,0' ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-gradient-to-r from-blue-900 to-emerald-500 text-white hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]'}`
+                            className: `w-full py-4 rounded-lg font-semibold text-lg shadow-lg ${!amount || amount === '0,00' || amount === '0,0' ? 'bg-slate-300 text-slate-500 cursor-not-allowed' : 'bg-gradient-to-r from-blue-900 to-emerald-500 text-white'}`
                         }, 'Générer le QR Code'),
                         React.createElement('div', { className: 'text-center mt-4 text-xs text-slate-500' }, `v${APP_VERSION}`)
                     )
@@ -496,7 +460,7 @@
 
             if (screen === 'display') {
                 return React.createElement('div', { className: 'min-h-screen bg-slate-50 p-6 flex items-start justify-center pt-6' },
-                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full animate-scale-in' },
+                    React.createElement('div', { className: 'bg-white rounded-2xl shadow-xl p-8 max-w-md w-full' },
                         React.createElement('div', { className: 'text-center mb-6' },
                             React.createElement('h2', { className: 'text-2xl font-semibold text-slate-900 mb-3' }, getDisplayName()),
                             React.createElement('div', {
@@ -510,17 +474,17 @@
                                 React.createElement('img', {
                                     src: qrCodeUrl,
                                     alt: 'QR Code WERO',
-                                    className: 'max-w-full rounded-xl shadow-lg',
-                                    style: { width: '320px', height: '320px', aspectRatio: '1/1', imageRendering: 'pixelated' }
+                                    className: 'max-w-full',
+                                    style: { width: '240px', height: '240px', aspectRatio: '1/1', imageRendering: 'pixelated' }
                                 }) :
-                                React.createElement('div', { className: 'flex items-center justify-center', style: { width: '320px', height: '320px' } },
-                                    React.createElement('div', { className: 'animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-yellow-400' })
+                                React.createElement('div', { className: 'flex items-center justify-center', style: { width: '240px', height: '240px' } },
+                                    React.createElement('div', { className: 'h-12 w-12 border-4 border-slate-200 border-t-yellow-400' })
                                 )
                         ),
                         React.createElement('p', { className: 'text-center text-sm text-slate-600 mb-6' }, 'Scannez ce QR code avec l\'application WERO pour payer'),
                         React.createElement('button', {
                             onClick: newPayment,
-                            className: 'w-full bg-gradient-to-r from-blue-900 to-emerald-500 text-white py-4 rounded-lg font-semibold text-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg flex items-center justify-center gap-2'
+                            className: 'w-full bg-gradient-to-r from-blue-900 to-emerald-500 text-white py-4 rounded-lg font-semibold text-lg shadow-lg flex items-center justify-center gap-2'
                         },
                             React.createElement('i', { 'data-lucide': 'x', className: 'w-5 h-5' }),
                             'Nouveau paiement'
@@ -538,10 +502,10 @@
                 React.createElement('img', {
                     src: './wero_logo.png',
                     alt: 'WERO',
-                    className: 'h-16 mb-6 animate-pulse'
+                    className: 'h-16 mb-6'
                 }),
                 React.createElement('div', {
-                    className: 'animate-spin rounded-full h-12 w-12 border-4 border-slate-200 border-t-yellow-400'
+                    className: 'rounded-full h-12 w-12 border-4 border-slate-200 border-t-yellow-400'
                 }),
                 React.createElement('p', {
                     className: 'mt-4 text-sm text-slate-500 font-medium'
