@@ -2,6 +2,8 @@
   "name": "MyWEROpay",
   "short_name": "MyWEROpay",
   "description": "Personal QR Code generator for WERO payment",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffee00",
